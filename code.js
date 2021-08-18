@@ -4,6 +4,7 @@
 // YOUR CODE HERE!
 let randomUrl = 'https://jservice.io/api/random';
 let cluesUrl = 'https://jservice.io/api/clues';
+let answer = "";
 
 function getRandomQuestionIndex(max) {
     return Math.floor(Math.random() * max);
@@ -26,20 +27,20 @@ function fetchRandomQuestion() {
     fetch(randomUrl)
     .then(response => response.json())
     .then(result => {
-        console.log('Success:', result, result[0].category_id);
+        //console.log('Success:', result, result[0].category_id);
         let categoryId = result[0].category_id;
-        console.log('categoryId:', categoryId);
+        //console.log('categoryId:', categoryId);
     
         fetch(cluesUrl, { category: categoryId })
         .then(response => response.json())
         .then(result => {
-            console.log('Success:', result);
+            //console.log('Success:', result);
             let randomQuestion = result[getRandomQuestionIndex(100)];
-            console.log('Random Question:', randomQuestion);
+            //console.log('Random Question:', randomQuestion);
 
             displayQuestion(randomQuestion.question, randomQuestion.answer);
 
-            clearInterval();
+            answer = randomQuestion.answer;
         })
     })
     .catch(error => {
@@ -59,7 +60,7 @@ function displayMessage(correct) {
     if (correct) {
         message.innerHTML = "Yay, you answered correctly!";
     } else {
-        message.innerHTML = "You lost miserably!"
+        message.innerHTML = `You lost the game. The correct answer was <strong>${answer}</strong>.`;
     }
     document.querySelector("form").append(message);
 }
@@ -68,19 +69,19 @@ let button = document.getElementById("submit");
 
 button.onclick = function(event) {
     event.preventDefault();
-    console.log("Clicked submit button");
+    //console.log("Clicked submit button");
 
     let correctAnswer = document.querySelector("input:valid");
     if (correctAnswer) {
-        console.log("Yay!");
+        //console.log("Yay!");
         incrementScore();
         displayMessage(true);
     } else {
-        console.log("You lost miserably!");
+        //console.log("You lost miserably!");
         document.querySelector(".score").innerText = 0;
         displayMessage(false);
     }
-    setTimeout(fetchRandomQuestion, 1000);
+    setTimeout(fetchRandomQuestion, 5000);
 }
 
 fetchRandomQuestion();
